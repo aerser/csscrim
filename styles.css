@@ -1,0 +1,15 @@
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    font-family: 'Helvetica Neue', sans-serif;
+    background: linear-gradient(135deg, #f06, #ffba08);
+    color: #fff;
+}
+
+.message {
+    text-align: center;
+    font-size: 2em;
+}

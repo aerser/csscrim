@@ -3,17 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ZENITH SCRIM's SITE</title>
+    <title>CS SCRIM's SITE</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <header>
-        <h1>ZENITH SCRIM 公式ページへようこそ</h1>
+        <h1>CS SCRIM 公式ページへようこそ</h1>
     </header>
     <main>
         <section>
             <h2>scrim について</h2>
-            <p>ZENITH SCRIMはPC勢の方々も含めたスクリムの開催をしています</p>
+            <p>CS SCRIMはconsoleの方々に向けたスクリムの開催をしています</p>
         </section>
         <section>
             <h2>お問い合わせ</h2>
@@ -25,7 +25,7 @@
 　　　　　</section>
     </main>
     <footer>
-        <p>&copy; 2025 ZENITH SCRIM. All rights reserved.</p>
+        <p>&copy; 2025 CS SCRIM. All rights reserved.</p>
     </footer>
     <script>
         function updateRandomNumber() {
@@ -36,5 +36,154 @@
         updateRandomNumber(); // Initial call to display the first number immediately
     </script>
     <script src="script.js"></script>
+</body>
+</html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>カスタムキー表示</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #121212;
+            color: white;
+            font-family: Arial, sans-serif;
+        }
+        .key-container {
+            background-color: #1e1e1e;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            font-size: 24px;
+            user-select: none;
+            opacity: 0;
+            transform: scale(0.9);
+            transition: opacity 1s ease, transform 0.5s ease;
+            position: relative;
+            display: none;
+        }
+        .visible {
+            display: block;
+            opacity: 1;
+            transform: scale(1);
+        }
+        .login-container {
+            text-align: center;
+        }
+        button {
+            background-color: #7289da;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #5b6eae;
+        }
+        .history {
+            margin-top: 20px;
+            background: #222;
+            padding: 10px;
+            border-radius: 5px;
+            max-width: 300px;
+            text-align: left;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container" id="login-container">
+        <button id="login-button">Discordでログイン</button>
+    </div>
+    <div class="key-container" id="key-container">
+        カスタムキー: <span id="custom-key">-</span>
+        <button id="copy-button">コピー</button>
+    </div>
+    <div class="history" id="history-container">
+        <h3>アクセス履歴</h3>
+        <ul id="history-list"></ul>
+    </div>
+
+    <script>
+        const clientId = "1342558184430243915";
+        const redirectUri = "https://aerser.github.io/ZENITH_SCRIM-s-SITE/";
+        const adminUser = "eikogoooo";
+
+        document.getElementById("login-button").addEventListener("click", function() {
+            window.location.href = `https://discord.com/api/oauth2/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=token&scope=identify`;
+        });
+
+        window.onload = function() {
+            const fragment = new URLSearchParams(window.location.hash.substring(1));
+            const accessToken = fragment.get("access_token");
+
+            if (accessToken) {
+                history.replaceState(null, null, window.location.pathname);
+                document.getElementById("login-container").style.display = "none";
+                const keyContainer = document.getElementById("key-container");
+
+                fetch("https://discord.com/api/users/@me", {
+                    headers: { "Authorization": `Bearer ${accessToken}` }
+                })
+                .then(response => response.json())
+                .then(user => {
+                    const userInfo = `${user.username}#${user.discriminator} (ID: ${user.id})`;
+                    saveAccessHistory(userInfo);
+
+                    if (user.username === adminUser) {
+                        document.getElementById("history-container").style.display = "block";
+                    }
+                });
+
+                setTimeout(() => {
+                    document.getElementById("custom-key").textContent = "現在マッチが開催されていません。更新をお待ちください。";
+                    keyContainer.classList.add("visible");
+                }, 1000);
+
+                setTimeout(() => {
+                    keyContainer.classList.remove("visible");
+                    setTimeout(() => {
+                        keyContainer.style.display = "none";
+                    }, 1000);
+                }, 13000);
+            }
+
+            loadAccessHistory();
+        };
+
+        function saveAccessHistory(userInfo) {
+            let history = JSON.parse(localStorage.getItem("accessHistory")) || [];
+            history.push({ user: userInfo, time: new Date().toLocaleString() });
+            localStorage.setItem("accessHistory", JSON.stringify(history));
+            loadAccessHistory();
+        }
+
+        function loadAccessHistory() {
+            let history = JSON.parse(localStorage.getItem("accessHistory")) || [];
+            const historyList = document.getElementById("history-list");
+            historyList.innerHTML = "";
+            history.forEach(entry => {
+                const li = document.createElement("li");
+                li.textContent = `${entry.time} - ${entry.user}`;
+                historyList.appendChild(li);
+            });
+        }
+
+        document.getElementById("copy-button").addEventListener("click", function() {
+            const keyText = document.getElementById("custom-key").textContent;
+            navigator.clipboard.writeText(keyText).then(() => {
+                alert("コピーしました!");
+                let user = "user.username";
+                saveAccessHistory(`${user.username} がキーをコピーしました`);
+            });
+        });
+    </script>
 </body>
 </html>

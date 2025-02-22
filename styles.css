@@ -13,3 +13,6 @@ body {
     text-align: center;
     font-size: 2em;
 }
+body {
+    min-height: 100vh; /* ビューポートの高さを基準にページの最小高さを設定 */
+}

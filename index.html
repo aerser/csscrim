@@ -23,6 +23,98 @@
             <h3> server ping </h3>
             <p id="random-number"></p>
 　　　　　</section>
+        <section>
+            <h4>スクリム日程</h4>
+            <!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2月のスクリム予定</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: center;
+            width: 14.28%;
+        }
+        .schedule {
+            font-size: 0.8em;
+            color: blue;
+        }
+    </style>
+</head>
+<body>
+    <h1>2月のスクリム予定</h1>
+    <table id="calendar">
+        <thead>
+            <tr>
+                <th>日</th>
+                <th>月</th>
+                <th>火</th>
+                <th>水</th>
+                <th>木</th>
+                <th>金</th>
+                <th>土</th>
+            </tr>
+        </thead>
+        <tbody id="calendar-body">
+        </tbody>
+    </table>
+
+    <script>
+        const schedules = {
+            "2025-02-10": "会議",
+            "2025-02-14": "バレンタインイベント",
+            "2025-02-20": "出張"
+        };
+
+        function generateCalendar() {
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = today.getMonth();
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            const calendarBody = document.getElementById('calendar-body');
+            calendarBody.innerHTML = '';
+            let row = document.createElement('tr');
+            
+            for (let i = 0; i < firstDay; i++) {
+                row.appendChild(document.createElement('td'));
+            }
+            
+            for (let day = 1; day <= daysInMonth; day++) {
+                let cell = document.createElement('td');
+                const dateKey = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                let scheduleText = schedules[dateKey] ? `<div class='schedule'>${schedules[dateKey]}</div>` : "";
+                cell.innerHTML = `<div>${day}</div>${scheduleText}`;
+                row.appendChild(cell);
+                
+                if ((firstDay + day) % 7 === 0) {
+                    calendarBody.appendChild(row);
+                    row = document.createElement('tr');
+                }
+            }
+            
+            if (row.childNodes.length > 0) {
+                calendarBody.appendChild(row);
+            }
+        }
+
+        generateCalendar();
+    </script>
+</body>
+</html>
+
+        </section>
     </main>
     <footer>
         <p>&copy; 2025 CS SCRIM. All rights reserved.</p>
